@@ -53,7 +53,7 @@ $(document).ready(function(){
 	        dataType:'json',
 	        data:{
 	            'apikey' : '13415ac3',
-	            'i' : $(this).data('id') 
+	            'i' : $(this).data('id')
 	        },
 	        success: function(result){
 	            if(result.Response === "True"){
@@ -62,7 +62,7 @@ $(document).ready(function(){
 	                    <div class="container-fluid">
 	                        <div class="row">
 	                            <div class="col-md-4 d-flex justify-content-center align-items-center">
-	                                <img src="` + result.Poster + `" class="img-fluid img-movie" alt="img-movie-detail">
+	                                <img src="` + result.Poster + `" class="img-fluid" alt="img-movie-detail">
 	                            </div>
 	                            <div class="col-md-8">
 	                                <ul class="list-group">
@@ -87,13 +87,14 @@ $(document).ready(function(){
 
 
 function searchMovies(){
+	var search = $('#search-text').val()
     $.ajax({
         url:'https://www.omdbapi.com',
         type:'GET',
         dataType:'json',
         data:{
             'apikey' : '13415ac3', 
-            's' : $('#search-text').val() 
+            's' : search,
         },
         success: function(result){
             let movies = result.Search;
@@ -131,9 +132,11 @@ function searchMovies(){
 	                prevText:"<",
 	                nextText:">",
 	                onPageClick: function(pageNumber){
-	                    var showFrom = perPage *(pageNumber - 1);
-	                    var showTo = showFrom + perPage;
-	                    items.hide().slice(showFrom, showTo).show();
+	                    // var showFrom = perPage *(pageNumber - 1);
+	                    // var showTo = showFrom + perPage;
+	                    // items.hide().slice(showFrom, showTo).show();
+	                    // alert(search)
+	                    showDataAfterPagination(pageNumber, search)
 	                }
 	            }).show()
 
@@ -150,4 +153,39 @@ function searchMovies(){
     });
 
     $('#search-text').val("");
+}
+
+
+function showDataAfterPagination(page, search){
+    $.ajax({
+        url:'https://www.omdbapi.com',
+        type:'GET',
+        dataType:'json',
+        data:{
+            'apikey' : '13415ac3', 
+            's' : search,
+            'page': page
+        },
+        success: function(result){
+            let movies = result.Search;
+            $('#movie-list').html('');
+            	$.each(movies, function(i, data){
+                    $('#movie-list').append(`<div class="col-lg-4 mb-4 card-movie">
+		                <div class="card h-100">
+							<div class="card-header">
+								<img src="`+ data.Poster +`" alt="img-movie" class="card-img-top img-movie" height="300px">
+							</div>
+
+							<div class="card-body">
+								<h5 class="card-title">`+ data.Title +`</h5>
+								<p class="card-text">Tahun: `+ data.Year +` </p>
+	                        	<a href="#" class="btn btn-primary btn-sm" id="btn-details" data-id="`+ data.imdbID +`" 
+                    			data-toggle="modal" data-target="#exampleModal"> Detail</a>
+							</div>
+						</div>
+	                </div>
+                    `);
+                })
+        	}
+    });
 }

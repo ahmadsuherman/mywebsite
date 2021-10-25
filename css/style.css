@@ -197,6 +197,7 @@ header{
 /* Pagination */
 .pagination {
   display: inline-block;
+  justify-content: center;
 }
 
 .pagination a {
