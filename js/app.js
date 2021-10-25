@@ -48,7 +48,7 @@ $(document).ready(function(){
 	// Modals
 	$('#movie-list').on('click', '#btn-details', function(e){
 	    $.ajax({
-	        url:'http://www.omdbapi.com',
+	        url:'https://www.omdbapi.com',
 	        type:'GET',
 	        dataType:'json',
 	        data:{
@@ -88,7 +88,7 @@ $(document).ready(function(){
 
 function searchMovies(){
     $.ajax({
-        url:'http://www.omdbapi.com',
+        url:'https://www.omdbapi.com',
         type:'GET',
         dataType:'json',
         data:{
