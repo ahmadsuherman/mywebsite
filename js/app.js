@@ -34,15 +34,27 @@ $(document).ready(function(){
 	  offset: '90%'
 	})
 	
-	$('#search-text').on('keyup', function(e){
-	    if(e.keyCode == 13) //tombol enter
-	    { 
-	        searchMovies();
-	    }
-	})
+	// $('#search-text').on('keyup', function(e){
+	//     if(e.keyCode == 13) //tombol enter
+	//     { 
+	//         searchMovies();
+	//     }
+	// })
 
 	$('#btn-search').on('click', function(e){
 	    searchMovies();
+	})
+
+	// $('#search-text-book').on('keyup', function(e){
+	//     if(e.keyCode == 13) //tombol enter
+	//     { 
+	//         searchBooks();
+	//     }
+	// })
+
+	$('#btn-search-book').on('click', function(e){
+		console.log("ahmad")
+	    searchBooks();
 	})
 
 	// Modals
@@ -79,6 +91,40 @@ $(document).ready(function(){
 	                    </div>    
 	                `);
 	            }
+	        }
+	    });
+	})
+
+	$('#book-list').on('click', '#btn-detail-books', function(e){
+		var id = $(this).data('id')
+		console.log(id)
+	    $.ajax({
+	        url:'https://www.googleapis.com/books/v1/volumes/' + id,
+	        type:'GET',
+	        dataType:'json',
+	        success: function(result){
+	        	console.log(result)
+                $('.modal-body').html('');
+                $('.modal-body').append(`
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-4 d-flex justify-content-center align-items-center">
+                                <img src="` + result.volumeInfo.imageLinks.thumbnail + `" class="img-fluid" alt="img-movie-detail">
+                            </div>
+                            <div class="col-md-8">
+                                <ul class="list-group">
+                                  <li class="list-group-item"><h4>`+ result.volumeInfo.title +`</h4></li>
+                                  <li class="list-group-item">Penulis : `+  result.volumeInfo.categories.join(', ') +`</li>
+                                  <li class="list-group-item">Penulis : `+  result.volumeInfo.authors.join(', ') +`</li>
+                                  <li class="list-group-item">Penerbit : `+ result.volumeInfo.publisher +`</li>
+                                  <li class="list-group-item">Tanggal Terbit : `+ result.volumeInfo.publishedDate +`</li>
+                                  <li class="list-group-item">Jumlah Halaman : `+ result.volumeInfo.pageCount +`</li>
+                                  <li class="list-group-item">Deskripsi : `+ result.volumeInfo.description +`</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>    
+                `);
 	        }
 	    });
 	})
@@ -132,11 +178,7 @@ function searchMovies(){
 	                prevText:"<",
 	                nextText:">",
 	                onPageClick: function(pageNumber){
-	                    // var showFrom = perPage *(pageNumber - 1);
-	                    // var showTo = showFrom + perPage;
-	                    // items.hide().slice(showFrom, showTo).show();
-	                    // alert(search)
-	                    showDataAfterPagination(pageNumber, search)
+	                    showDataMovieAfterPagination(pageNumber, search)
 	                }
 	            }).show()
 
@@ -156,13 +198,79 @@ function searchMovies(){
 }
 
 
-function showDataAfterPagination(page, search){
+function searchBooks(){
+	var search = $('#search-text-book').val()
+	console.log(search)
+    $.ajax({
+        url:'https://www.googleapis.com/books/v1/volumes',
+        type:'GET',
+        dataType:'json',
+        data:{
+            'q' : search,
+        },
+        success: function(result){
+            $('#book-list').html('');
+            if(result.items){
+            	let books = result.items;
+                $.each(books, function(i, data){
+                    $('#book-list').append(`<div class="col-lg-4 mb-4 card-book">
+		                <div class="card h-100">
+							<div class="card-header">
+								<img src="`+ data.volumeInfo.imageLinks.thumbnail +`" alt="img-book" class="card-img-top img-movie" height="300px">
+							</div>
+
+							<div class="card-body">
+								<h5 class="card-title">`+ data.volumeInfo.title +`</h5>
+								<p class="card-text">Jumlah Halaman: `+ data.volumeInfo.pageCount +` </p>
+	                        	<a href="#" class="btn btn-primary btn-sm" id="btn-detail-books" data-id="`+ data.id +`" 
+                    			data-toggle="modal" data-target="#exampleModal"> Detail</a>
+							</div>
+						</div>
+	                </div>
+                    `);
+                })
+
+                var items = $('#book-list .card-book');
+	            var numItems = result.totalItems;
+	            console.log(numItems)
+	            var perPage = 10;
+
+	            items.slice(perPage).hide();
+
+	            $('#pagination-container-book').pagination({
+	                items: numItems,
+	                itemsOnPage: perPage,
+	                prevText:"<",
+	                nextText:">",
+	                onPageClick: function(pageNumber){
+	                    showDataBookAfterPagination(pageNumber, search)
+	                }
+	            }).show()
+
+            }else{
+  				console.log("error")
+                $('#book-list').append(`
+                    <div class="col-sm-12 text-center">
+                        <h1> Buku not found! </h1>
+                    </div>
+                `);
+
+                $('#pagination-container-book').hide()
+            }
+        }
+    });
+
+    $('#search-text').val("");
+}
+
+
+function showDataMovieAfterPagination(page, search){
     $.ajax({
         url:'https://www.omdbapi.com',
         type:'GET',
         dataType:'json',
         data:{
-            'apikey' : '13415ac3', 
+        	'apikey' : '13415ac3', 
             's' : search,
             'page': page
         },
@@ -187,5 +295,35 @@ function showDataAfterPagination(page, search){
                     `);
                 })
         	}
+    });
+}
+
+function showDataBookAfterPagination(page, search){
+    $.ajax({
+        url:'https://www.googleapis.com/books/v1/volumes?q='+ search +'?page=' + page,
+        type:'GET',
+        dataType:'json',
+
+        success: function(result){
+            let books = result.items;
+            $('#book-list').html('');
+            $.each(books, function(i, data){
+                $('#book-list').append(`<div class="col-lg-4 mb-4 card-book">
+	                <div class="card h-100">
+						<div class="card-header">
+							<img src="`+ data.volumeInfo.imageLinks.thumbnail +`" alt="img-book" class="card-img-top img-movie" height="300px">
+						</div>
+
+						<div class="card-body">
+							<h5 class="card-title">`+ data.volumeInfo.title +`</h5>
+							<p class="card-text">Jumlah Halaman: `+ data.volumeInfo.pageCount +` </p>
+                        	<a href="#" class="btn btn-primary btn-sm" id="btn-detail-books" data-id="`+ data.id +`" 
+                			data-toggle="modal" data-target="#exampleModal"> Detail</a>
+						</div>
+					</div>
+                </div>
+                `);
+            })
+        }
     });
 }
