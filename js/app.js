@@ -33,27 +33,13 @@ $(document).ready(function(){
 	  },
 	  offset: '90%'
 	})
-	
-	// $('#search-text').on('keyup', function(e){
-	//     if(e.keyCode == 13) //tombol enter
-	//     { 
-	//         searchMovies();
-	//     }
-	// })
+
 
 	$('#btn-search').on('click', function(e){
 	    searchMovies();
 	})
 
-	// $('#search-text-book').on('keyup', function(e){
-	//     if(e.keyCode == 13) //tombol enter
-	//     { 
-	//         searchBooks();
-	//     }
-	// })
-
 	$('#btn-search-book').on('click', function(e){
-		console.log("ahmad")
 	    searchBooks();
 	})
 
@@ -70,6 +56,7 @@ $(document).ready(function(){
 	        success: function(result){
 	            if(result.Response === "True"){
 	                $('.modal-body').html('');
+	                let production = result.Production ? result.Production : '-'
 	                $('.modal-body').append(`
 	                    <div class="container-fluid">
 	                        <div class="row">
@@ -83,7 +70,7 @@ $(document).ready(function(){
 	                                  <li class="list-group-item">Aliran : `+ result.Genre +`</li>
 	                                  <li class="list-group-item">Penulis : `+ result.Writer +`</li>
 	                                  <li class="list-group-item">Aktor : `+ result.Actors +`</li>
-	                                  <li class="list-group-item">Produksi : `+ result.Production +`</li>
+	                                  <li class="list-group-item">Produksi : `+ production +`</li>
 	                                  <li class="list-group-item">Alur Cerita : `+ result.Plot +`</li>
 	                                </ul>
 	                            </div>
@@ -97,29 +84,36 @@ $(document).ready(function(){
 
 	$('#book-list').on('click', '#btn-detail-books', function(e){
 		var id = $(this).data('id')
-		console.log(id)
 	    $.ajax({
 	        url:'https://www.googleapis.com/books/v1/volumes/' + id,
 	        type:'GET',
 	        dataType:'json',
 	        success: function(result){
-	        	console.log(result)
                 $('.modal-body').html('');
+                let title = result.volumeInfo.title ? result.volumeInfo.title : '-',
+                	categories = result.volumeInfo.categories ? result.volumeInfo.categories.join(', ') : '-',
+                	authors = result.volumeInfo.authors ? result.volumeInfo.authors.join(', ') : '-',
+                	description = result.volumeInfo.description ? result.volumeInfo.description : '-',
+                	pageCount = result.volumeInfo.pageCount ? result.volumeInfo.pageCount : '-',
+                	thumbnail = result.volumeInfo.imageLinks ? result.volumeInfo.imageLinks.thumbnail : '-',
+                	publisher = result.volumeInfo.publisher ? result.volumeInfo.publisher : '-',
+                	publishedDate = result.volumeInfo.publishedDate ? result.volumeInfo.publishedDate : '-'
+
                 $('.modal-body').append(`
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-md-4 d-flex justify-content-center align-items-center">
-                                <img src="` + result.volumeInfo.imageLinks.thumbnail + `" class="img-fluid" alt="img-movie-detail">
+                                <img src="` + thumbnail + `" class="img-fluid" alt="img-book-detail">
                             </div>
                             <div class="col-md-8">
                                 <ul class="list-group">
-                                  <li class="list-group-item"><h4>`+ result.volumeInfo.title +`</h4></li>
-                                  <li class="list-group-item">Penulis : `+  result.volumeInfo.categories.join(', ') +`</li>
-                                  <li class="list-group-item">Penulis : `+  result.volumeInfo.authors.join(', ') +`</li>
-                                  <li class="list-group-item">Penerbit : `+ result.volumeInfo.publisher +`</li>
-                                  <li class="list-group-item">Tanggal Terbit : `+ result.volumeInfo.publishedDate +`</li>
-                                  <li class="list-group-item">Jumlah Halaman : `+ result.volumeInfo.pageCount +`</li>
-                                  <li class="list-group-item">Deskripsi : `+ result.volumeInfo.description +`</li>
+                                  <li class="list-group-item"><h4>`+ title +`</h4></li>
+                                  <li class="list-group-item">Kategori : `+  categories +`</li>
+                                  <li class="list-group-item">Pengarang : `+  authors +`</li>
+                                  <li class="list-group-item">Penerbit : `+ publisher +`</li>
+                                  <li class="list-group-item">Tahun Terbit : `+ publishedDate +`</li>
+                                  <li class="list-group-item">Jumlah Halaman : `+ pageCount +`</li>
+                                  <li class="list-group-item">Deskripsi : `+ description +`</li>
                                 </ul>
                             </div>
                         </div>
@@ -193,14 +187,12 @@ function searchMovies(){
             }
         }
     });
-
-    $('#search-text').val("");
 }
 
 
 function searchBooks(){
 	var search = $('#search-text-book').val()
-	console.log(search)
+	// console.log(search)
     $.ajax({
         url:'https://www.googleapis.com/books/v1/volumes',
         type:'GET',
@@ -213,15 +205,16 @@ function searchBooks(){
             if(result.items){
             	let books = result.items;
                 $.each(books, function(i, data){
+                	let thumbnail = data.volumeInfo.imageLinks ? data.volumeInfo.imageLinks.thumbnail : '-',
+                		title = data.volumeInfo.title ? data.volumeInfo.title : '-'
                     $('#book-list').append(`<div class="col-lg-4 mb-4 card-book">
 		                <div class="card h-100">
 							<div class="card-header">
-								<img src="`+ data.volumeInfo.imageLinks.thumbnail +`" alt="img-book" class="card-img-top img-movie" height="300px">
+								<img src="`+ thumbnail +`" alt="img-book" class="card-img-top img-movie" height="300px">
 							</div>
 
 							<div class="card-body">
-								<h5 class="card-title">`+ data.volumeInfo.title +`</h5>
-								<p class="card-text">Jumlah Halaman: `+ data.volumeInfo.pageCount +` </p>
+								<h5 class="card-title">`+ title +`</h5>
 	                        	<a href="#" class="btn btn-primary btn-sm" id="btn-detail-books" data-id="`+ data.id +`" 
                     			data-toggle="modal" data-target="#exampleModal"> Detail</a>
 							</div>
@@ -232,9 +225,7 @@ function searchBooks(){
 
                 var items = $('#book-list .card-book');
 	            var numItems = result.totalItems;
-	            console.log(numItems)
 	            var perPage = 10;
-
 	            items.slice(perPage).hide();
 
 	            $('#pagination-container-book').pagination({
@@ -259,8 +250,6 @@ function searchBooks(){
             }
         }
     });
-
-    $('#search-text').val("");
 }
 
 
@@ -308,20 +297,22 @@ function showDataBookAfterPagination(page, search){
             let books = result.items;
             $('#book-list').html('');
             $.each(books, function(i, data){
-                $('#book-list').append(`<div class="col-lg-4 mb-4 card-book">
-	                <div class="card h-100">
-						<div class="card-header">
-							<img src="`+ data.volumeInfo.imageLinks.thumbnail +`" alt="img-book" class="card-img-top img-movie" height="300px">
-						</div>
+                let thumbnail = data.volumeInfo.imageLinks ? data.volumeInfo.imageLinks.thumbnail : '-',
+                		title = data.volumeInfo.title ? data.volumeInfo.title : '-'
+                		
+                    $('#book-list').append(`<div class="col-lg-4 mb-4 card-book">
+		                <div class="card h-100">
+							<div class="card-header">
+								<img src="`+ thumbnail +`" alt="img-book" class="card-img-top img-movie" height="300px">
+							</div>
 
-						<div class="card-body">
-							<h5 class="card-title">`+ data.volumeInfo.title +`</h5>
-							<p class="card-text">Jumlah Halaman: `+ data.volumeInfo.pageCount +` </p>
-                        	<a href="#" class="btn btn-primary btn-sm" id="btn-detail-books" data-id="`+ data.id +`" 
-                			data-toggle="modal" data-target="#exampleModal"> Detail</a>
+							<div class="card-body">
+								<h5 class="card-title">`+ title +`</h5>
+	                        	<a href="#" class="btn btn-primary btn-sm" id="btn-detail-books" data-id="`+ data.id +`" 
+                    			data-toggle="modal" data-target="#exampleModal"> Detail</a>
+							</div>
 						</div>
-					</div>
-                </div>
+	                </div>
                 `);
             })
         }
