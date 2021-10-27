@@ -43,6 +43,10 @@ $(document).ready(function(){
 	    searchBooks();
 	})
 
+	$('#btn-search-song').on('click', function(e){
+	    searchSongs();
+	})
+
 	// Modals
 	$('#movie-list').on('click', '#btn-details', function(e){
 	    $.ajax({
@@ -124,13 +128,38 @@ $(document).ready(function(){
 	        }
 	    });
 	})
+
+	$('#song-list').on('click', '#btn-detail-songs', function(e){
+		var id = $(this).data('id')
+	    $.ajax({
+	        url:'https://api-song-lyrics.herokuapp.com/lyrics/' + id,
+	        type:'GET',
+	        dataType:'json',
+	        success: function(result){
+	        	$('#titleModal').html("Song Lyrics Detail");
+                $('.modal-body').html('');
+                
+                $('.modal-body').append(`
+                    <div class="container-fluid">
+                        <div class="row">
+
+                            <div class="col-md-12">
+                                <ul class="list-group">
+                                  <li class="list-group-item"><h4>`+ result.data.songTitle +`</h4></li>
+                                  <li class="list-group-item">Artist: `+  result.data.artist +`</li>
+                                  <li class="list-group-item">Lyrics: <br> `+  result.data.songLyricsArr.join('<br>') +`</li>
+      
+                                </ul>
+                            </div>
+                        </div>
+                    </div>    
+                `);
+	        }
+	    });
+	})
 	
 })
 
-function titleModal()
-{
-
-}
 function searchMovies(){
 	var search = $('#search-text').val()
     $.ajax({
@@ -244,7 +273,6 @@ function searchBooks(){
 	            }).show()
 
             }else{
-  				console.log("error")
                 $('#book-list').append(`
                     <div class="col-sm-12 text-center">
                         <h1> Buku not found! </h1>
@@ -257,6 +285,65 @@ function searchBooks(){
     });
 }
 
+function searchSongs(){
+	var search = $('#search-text-song').val()
+	// console.log(search)
+    $.ajax({
+        url:'https://api-song-lyrics.herokuapp.com/search',
+        type:'GET',
+        dataType:'json',
+        data:{
+            'q' : search,
+        },
+        success: function(result){
+            $('#song-list').html('');
+            if(result.data.length !== 0){
+            	let song = result.data;
+                $.each(song, function(i, data){
+                	// let thumbnail = data.volumeInfo.imageLinks ? data.volumeInfo.imageLinks.thumbnail : '-',
+                	// 	title = data.volumeInfo.title ? data.volumeInfo.title : '-'
+                    $('#song-list').append(`<div class="col-lg-4 mb-4 card-song">
+		                <div class="card h-100">
+							<div class="card-body">
+								<h5 class="card-title">`+ data.songTitle +`</h5>
+								<p class="card-text">Artist: `+ data.artist +` </p>
+	                        	<a href="#" class="btn btn-primary btn-sm" id="btn-detail-songs" data-id="`+ data.songId +`" 
+                    			data-toggle="modal" data-target="#exampleModal"> Detail</a>
+							</div>
+						</div>
+	                </div>
+                    `);
+                })
+
+                var items = $('#song-list .card-song');
+	            var numItems = result.data.length;
+	            var perPage = 10;
+	            items.slice(perPage).hide();
+
+	            $('#pagination-container-song').pagination({
+	                items: numItems,
+	                itemsOnPage: perPage,
+	                prevText:"<",
+	                nextText:">",
+	                onPageClick: function(pageNumber){
+	                	var showFrom = perPage *(pageNumber - 1);
+                    	var showTo = showFrom + perPage;
+                    	items.hide().slice(showFrom, showTo).show();
+	                }
+	            }).show()
+
+            }else{
+                $('#song-list').append(`
+                    <div class="col-sm-12 text-center">
+                        <h1> Song Lyrics not found! </h1>
+                    </div>
+                `);
+
+                $('#pagination-container-song').hide()
+            }
+        }
+    });
+}
 
 function showDataMovieAfterPagination(page, search){
     $.ajax({

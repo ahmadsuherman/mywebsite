@@ -190,21 +190,29 @@ header{
 	background: #e65f78;
 }
 
+/* Movie */
+.movie{
+	width: 100%;
+	min-height: 100vh;
+}
 .img-movie{
 	border-radius: 8px;
 }
 
-/* Pagination */
-.pagination {
-  display: inline-block;
-  justify-content: center;
+/* Book */
+.book{
+	width: 100%;
+	min-height: 100vh;
 }
 
-.pagination a {
-  color: black;
-  float: left;
-  padding: 8px 16px;
-  text-decoration: none;
+.img-book{
+	border-radius: 8px;
+}
+
+/* song */
+.song{
+	width: 100%;
+	min-height: 100vh;
 }
 
 /* Pagination */
@@ -224,7 +232,7 @@ header{
     display: block;
     width: 40px;
     height: 40px;
-/*    line-height: 40px;*/
+    line-height: 40px;
     background-color: #fff;
     text-align: center;
     text-decoration: none;
@@ -236,20 +244,20 @@ header{
 }
 
 .simple-pagination li a:hover{
-    background: #000;
+    background: #007bff;
     color: white;
 }
 
 .simple-pagination .current{
     color: #fff;
-    background-color: #000;
+    background-color: #007bff;
     border-color: rgba(255,255,255);
     border: 1px solid;
     cursor: pointer;
 }
 
 .simple-pagination .prev.current, .simple-pagination .next.current {
-    background: #000;
+    background: #007bff;
     border: auto;
     margin: auto;
 }
