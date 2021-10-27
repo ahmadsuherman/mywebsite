@@ -55,6 +55,7 @@ $(document).ready(function(){
 	        },
 	        success: function(result){
 	            if(result.Response === "True"){
+	            	$('#titleModal').html("Movie Detail");
 	                $('.modal-body').html('');
 	                let production = result.Production ? result.Production : '-'
 	                $('.modal-body').append(`
@@ -66,12 +67,12 @@ $(document).ready(function(){
 	                            <div class="col-md-8">
 	                                <ul class="list-group">
 	                                  <li class="list-group-item"><h4>`+ result.Title +`</h4></li>
-	                                  <li class="list-group-item">Dirilis : `+ result.Released +`</li>
-	                                  <li class="list-group-item">Aliran : `+ result.Genre +`</li>
-	                                  <li class="list-group-item">Penulis : `+ result.Writer +`</li>
-	                                  <li class="list-group-item">Aktor : `+ result.Actors +`</li>
-	                                  <li class="list-group-item">Produksi : `+ production +`</li>
-	                                  <li class="list-group-item">Alur Cerita : `+ result.Plot +`</li>
+	                                  <li class="list-group-item">Release : `+ result.Released +`</li>
+	                                  <li class="list-group-item">Genre : `+ result.Genre +`</li>
+	                                  <li class="list-group-item">Writer : `+ result.Writer +`</li>
+	                                  <li class="list-group-item">Actor : `+ result.Actors +`</li>
+	                                  <li class="list-group-item">Production : `+ production +`</li>
+	                                  <li class="list-group-item">Storyline : `+ result.Plot +`</li>
 	                                </ul>
 	                            </div>
 	                        </div>
@@ -89,6 +90,7 @@ $(document).ready(function(){
 	        type:'GET',
 	        dataType:'json',
 	        success: function(result){
+	        	$('#titleModal').html("Book Detail");
                 $('.modal-body').html('');
                 let title = result.volumeInfo.title ? result.volumeInfo.title : '-',
                 	categories = result.volumeInfo.categories ? result.volumeInfo.categories.join(', ') : '-',
@@ -108,12 +110,12 @@ $(document).ready(function(){
                             <div class="col-md-8">
                                 <ul class="list-group">
                                   <li class="list-group-item"><h4>`+ title +`</h4></li>
-                                  <li class="list-group-item">Kategori : `+  categories +`</li>
-                                  <li class="list-group-item">Pengarang : `+  authors +`</li>
-                                  <li class="list-group-item">Penerbit : `+ publisher +`</li>
-                                  <li class="list-group-item">Tahun Terbit : `+ publishedDate +`</li>
-                                  <li class="list-group-item">Jumlah Halaman : `+ pageCount +`</li>
-                                  <li class="list-group-item">Deskripsi : `+ description +`</li>
+                                  <li class="list-group-item">Category : `+  categories +`</li>
+                                  <li class="list-group-item">Author : `+  authors +`</li>
+                                  <li class="list-group-item">Publisher : `+ publisher +`</li>
+                                  <li class="list-group-item">Date Publisher : `+ publishedDate +`</li>
+                                  <li class="list-group-item">Number of Page : `+ pageCount +`</li>
+                                  <li class="list-group-item">Description : `+ description +`</li>
                                 </ul>
                             </div>
                         </div>
@@ -122,10 +124,13 @@ $(document).ready(function(){
 	        }
 	    });
 	})
-
+	
 })
 
+function titleModal()
+{
 
+}
 function searchMovies(){
 	var search = $('#search-text').val()
     $.ajax({
@@ -150,7 +155,7 @@ function searchMovies(){
 
 							<div class="card-body">
 								<h5 class="card-title">`+ data.Title +`</h5>
-								<p class="card-text">Tahun: `+ data.Year +` </p>
+								<p class="card-text">Year: `+ data.Year +` </p>
 	                        	<a href="#" class="btn btn-primary btn-sm" id="btn-details" data-id="`+ data.imdbID +`" 
                     			data-toggle="modal" data-target="#exampleModal"> Detail</a>
 							</div>
@@ -275,7 +280,7 @@ function showDataMovieAfterPagination(page, search){
 
 							<div class="card-body">
 								<h5 class="card-title">`+ data.Title +`</h5>
-								<p class="card-text">Tahun: `+ data.Year +` </p>
+								<p class="card-text">Year: `+ data.Year +` </p>
 	                        	<a href="#" class="btn btn-primary btn-sm" id="btn-details" data-id="`+ data.imdbID +`" 
                     			data-toggle="modal" data-target="#exampleModal"> Detail</a>
 							</div>
