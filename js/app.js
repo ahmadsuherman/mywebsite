@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(function(){
 	$(window).on('scroll', function(){
 		const scroll = $(window).scrollTop();
 		if (scroll >= 50) {
@@ -9,8 +9,6 @@ $(document).ready(function(){
 	})
 
 	typed()
-
-	// Progress Bars
 	waypoint()
 
 	$('#btnSearchMovie').on('click', function(e){
@@ -28,129 +26,6 @@ $(document).ready(function(){
 	$('#btnSearchSong').on('click', function(e){
 	    searchSongs();
 	})
-
-	// Modals
-	// $('#movie-list').modal('show')
-
-	$('#movieList').on('click', '#btnDetailMovie', function(e){
-	    $.ajax({
-	        url:'https://www.omdbapi.com',
-	        type:'GET',
-	        dataType:'json',
-	        data:{
-	            'apikey' : '13415ac3',
-	            'i' : $(this).data('id')
-	        },
-	        success: function(result){
-	            if(result.Response === "True"){
-	            	$('#titleModal').text("Movie Detail");
-	                $('.modal-body').html('');
-	                let production = result.Production ? result.Production : '-'
-	                $('.modal-body').append(`
-	                    <div class="container-fluid">
-	                        <div class="row">
-	                            <div class="col-md-4 d-flex justify-content-center align-items-center">
-	                                <img src="` + result.Poster + `" class="img-fluid" alt="img-movie-detail">
-	                            </div>
-	                            <div class="col-md-8">
-	                                <ul class="list-group">
-	                                  <li class="list-group-item"><h4>`+ result.Title +`</h4></li>
-	                                  <li class="list-group-item">Release : `+ result.Released +`</li>
-	                                  <li class="list-group-item">Genre : `+ result.Genre +`</li>
-	                                  <li class="list-group-item">Writer : `+ result.Writer +`</li>
-	                                  <li class="list-group-item">Actor : `+ result.Actors +`</li>
-	                                  <li class="list-group-item">Production : `+ production +`</li>
-	                                  <li class="list-group-item">Storyline : `+ result.Plot +`</li>
-	                                </ul>
-	                            </div>
-	                        </div>
-	                    </div>    
-	                `);
-	            }
-	        },
-	        error: function (e) {
-	          	alert(e)
-	        }
-	    });
-	})
-
-	$('#bookList').on('click', '#btnDetailBooks', function(e){
-		const id = $(this).data('id')
-	    $.ajax({
-	        url:'https://www.googleapis.com/books/v1/volumes/' + id,
-	        type:'GET',
-	        dataType:'json',
-	        success: function(result){
-	        	$('#titleModal').text("Book Detail");
-                $('.modal-body').html('');
-                let title = result.volumeInfo.title ? result.volumeInfo.title : '-',
-                	categories = result.volumeInfo.categories ? result.volumeInfo.categories.join(', ') : '-',
-                	authors = result.volumeInfo.authors ? result.volumeInfo.authors.join(', ') : '-',
-                	description = result.volumeInfo.description ? result.volumeInfo.description : '-',
-                	pageCount = result.volumeInfo.pageCount ? result.volumeInfo.pageCount : '-',
-                	thumbnail = result.volumeInfo.imageLinks ? result.volumeInfo.imageLinks.thumbnail : '-',
-                	publisher = result.volumeInfo.publisher ? result.volumeInfo.publisher : '-',
-                	publishedDate = result.volumeInfo.publishedDate ? result.volumeInfo.publishedDate : '-'
-
-                $('.modal-body').append(`
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-md-4 d-flex justify-content-center align-items-center">
-                                <img src="` + thumbnail + `" class="img-fluid" alt="img-book-detail">
-                            </div>
-                            <div class="col-md-8">
-                                <ul class="list-group">
-                                  <li class="list-group-item"><h4>`+ title +`</h4></li>
-                                  <li class="list-group-item">Category : `+  categories +`</li>
-                                  <li class="list-group-item">Author : `+  authors +`</li>
-                                  <li class="list-group-item">Publisher : `+ publisher +`</li>
-                                  <li class="list-group-item">Date Publisher : `+ publishedDate +`</li>
-                                  <li class="list-group-item">Number of Page : `+ pageCount +`</li>
-                                  <li class="list-group-item">Description : `+ description +`</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>    
-                `);
-	        },
-	        error: function (e) {
-	          alert(e)
-	        }
-	    });
-	})
-
-	$('#songList').on('click', '#btnDetailSongs', function(e){
-		const id = $(this).data('id')
-	    $.ajax({
-	        url:'https://song-lyrics-api-o0m8tth8t-azharimm.vercel.app/lyrics/' + id,
-	        type:'GET',
-	        dataType:'json',
-	        success: function(result){
-	        	$('#titleModal').text("Song Lyrics Detail");
-                $('.modal-body').html('');
-                
-                $('.modal-body').append(`
-                    <div class="container-fluid">
-                        <div class="row">
-
-                            <div class="col-md-12">
-                                <ul class="list-group">
-                                  <li class="list-group-item"><h4>`+ result.data.songTitle +`</h4></li>
-                                  <li class="list-group-item">Artist: `+  result.data.artist +`</li>
-                                  <li class="list-group-item">Lyrics: <br> `+  result.data.songLyricsArr.join('<br>') +`</li>
-      
-                                </ul>
-                            </div>
-                        </div>
-                    </div>    
-                `);
-	        },
-	        error: function (e) {
-	          	alert(e)
-	        }
-	    });
-	})
-	
 })
 
 function typed()
@@ -208,8 +83,8 @@ function searchMovies(search, page){
 							<div class="card-body">
 								<h5 class="card-title">`+ data.Title +`</h5>
 								<p class="card-text">Year: `+ data.Year +` </p>
-	                        	<a href="#" class="btn btn-primary btn-sm btn-movie" id="btnDetailMovie" data-id="`+ data.imdbID +`" 
-                    			data-toggle="modal" data-target="#exampleModal"> Detail</a>
+	                        	<a href="#" class="btn btn-primary btn-sm btn-movie" id="btnDetailMovie" 
+                    			data-toggle="modal" onClick="showModalMovie('${data.imdbID}', '#exampleModal')"> Detail</a>
 							</div>
 						</div>
 	                </div>
@@ -247,7 +122,6 @@ function searchMovies(search, page){
     });
 }
 
-
 function searchBooks(search, page){
     $.ajax({
         url:'https://www.googleapis.com/books/v1/volumes',
@@ -272,8 +146,8 @@ function searchBooks(search, page){
 
 							<div class="card-body">
 								<h5 class="card-title">`+ title +`</h5>
-	                        	<a href="#" class="btn btn-primary btn-sm" id="btnDetailBooks" data-id="`+ data.id +`" 
-                    			data-toggle="modal" data-target="#exampleModal"> Detail</a>
+	                        	<a href="#" class="btn btn-primary btn-sm"
+                    			data-toggle="modal" onClick="showModalBook('${data.id}', '#exampleModal')"> Detail</a>
 							</div>
 						</div>
 	                </div>
@@ -338,8 +212,8 @@ function searchSongs(){
 							<div class="card-body">
 								<h5 class="card-title">`+ data.songTitle +`</h5>
 								<p class="card-text">Artist: `+ data.artist +` </p>
-	                        	<a href="#" class="btn btn-primary btn-sm" id="btnDetailSongs" data-id="`+ data.songId +`" 
-                    			data-toggle="modal" data-target="#exampleModal"> Detail</a>
+	                        	<a href="#" class="btn btn-primary btn-sm"
+                    			data-toggle="modal" onClick="showModalSong('${data.songId}', '#exampleModal')"> Detail</a>
 							</div>
 						</div>
 	                </div>
@@ -382,6 +256,133 @@ function searchSongs(){
 	        `);
 
 	        $('#paginationContainerSong').hide()
+        }
+    });
+}
+
+function showModalMovie(id, modal)
+{	
+	$(modal).modal('show');
+
+    $.ajax({
+        url:'https://www.omdbapi.com',
+        type:'GET',
+        dataType:'json',
+        data:{
+            'apikey' : '13415ac3',
+            'i' : id
+        },
+        success: function(result){
+            if(result.Response === "True"){
+            	$('#titleModal').text("Movie Detail");
+                $('.modal-body').html('');
+                let production = result.Production ? result.Production : '-'
+                $('.modal-body').append(`
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-4 d-flex justify-content-center align-items-center">
+                                <img src="` + result.Poster + `" class="img-fluid" alt="img-movie-detail">
+                            </div>
+                            <div class="col-md-8">
+                                <ul class="list-group">
+                                  <li class="list-group-item"><h4>`+ result.Title +`</h4></li>
+                                  <li class="list-group-item">Release : `+ result.Released +`</li>
+                                  <li class="list-group-item">Genre : `+ result.Genre +`</li>
+                                  <li class="list-group-item">Writer : `+ result.Writer +`</li>
+                                  <li class="list-group-item">Actor : `+ result.Actors +`</li>
+                                  <li class="list-group-item">Production : `+ production +`</li>
+                                  <li class="list-group-item">Storyline : `+ result.Plot +`</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>    
+                `);
+            }
+        },
+        error: function (e) {
+          	alert(e)
+        }
+    });
+}
+
+function showModalBook(id, modal)
+{
+	$(modal).modal('show')
+
+    $.ajax({
+        url:'https://www.googleapis.com/books/v1/volumes/' + id,
+        type:'GET',
+        dataType:'json',
+        success: function(result){
+        	$('#titleModal').text("Book Detail");
+            $('.modal-body').html('');
+            let title = result.volumeInfo.title ? result.volumeInfo.title : '-',
+            	categories = result.volumeInfo.categories ? result.volumeInfo.categories.join(', ') : '-',
+            	authors = result.volumeInfo.authors ? result.volumeInfo.authors.join(', ') : '-',
+            	description = result.volumeInfo.description ? result.volumeInfo.description : '-',
+            	pageCount = result.volumeInfo.pageCount ? result.volumeInfo.pageCount : '-',
+            	thumbnail = result.volumeInfo.imageLinks ? result.volumeInfo.imageLinks.thumbnail : '-',
+            	publisher = result.volumeInfo.publisher ? result.volumeInfo.publisher : '-',
+            	publishedDate = result.volumeInfo.publishedDate ? result.volumeInfo.publishedDate : '-'
+
+            $('.modal-body').append(`
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-4 d-flex justify-content-center align-items-center">
+                            <img src="` + thumbnail + `" class="img-fluid" alt="img-book-detail">
+                        </div>
+                        <div class="col-md-8">
+                            <ul class="list-group">
+                              <li class="list-group-item"><h4>`+ title +`</h4></li>
+                              <li class="list-group-item">Category : `+  categories +`</li>
+                              <li class="list-group-item">Author : `+  authors +`</li>
+                              <li class="list-group-item">Publisher : `+ publisher +`</li>
+                              <li class="list-group-item">Date Publisher : `+ publishedDate +`</li>
+                              <li class="list-group-item">Number of Page : `+ pageCount +`</li>
+                              <li class="list-group-item">Description : `+ description +`</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>    
+            `);
+        },
+        error: function (e) {
+          alert(e)
+        }
+    });
+
+}
+
+function showModalSong(id, modal)
+{
+	$(modal).modal('show')
+
+    $.ajax({
+        url:'https://song-lyrics-api-o0m8tth8t-azharimm.vercel.app/lyrics/' + id,
+        type:'GET',
+        dataType:'json',
+        success: function(result){
+        	$('#titleModal').text("Song Lyrics Detail");
+            $('.modal-body').html('');
+            
+            $('.modal-body').append(`
+                <div class="container-fluid">
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <ul class="list-group">
+                              <li class="list-group-item"><h4>`+ result.data.songTitle +`</h4></li>
+                              <li class="list-group-item">Artist: `+  result.data.artist +`</li>
+                              <li class="list-group-item">Lyrics: <br> `+  result.data.songLyricsArr.join('<br>') +`</li>
+  
+                            </ul>
+                        </div>
+                    </div>
+                </div>    
+            `);
+        },
+        error: function (e) {
+          	alert(e)
         }
     });
 }
