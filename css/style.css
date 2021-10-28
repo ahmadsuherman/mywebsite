@@ -164,12 +164,15 @@ header{
 	background-color: #EE8683 !important;
 }
 
-.exp-class label{
+.exp-class span{
 	font-size: 20px;
 	margin: 10px;
 /*	margin-bottom: ;*/
 }
 
+span{
+	display: inline-block;
+}
 /* Service Section */
 .card,.card-header{
 	background: #F8F9FA !important;
