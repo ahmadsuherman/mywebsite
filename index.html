@@ -16,10 +16,10 @@
 	<nav class="navbar navbar-expand-lg sticky fixed-top r-nav">
 		<div class="container">
 			<a href="javascript:void(0)" class="navbar-brand">My Brand</a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarId">
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
 				<span><i class="fas fa-bars hamburger"></i></span>
 			</button>
-			<div class="collapse navbar-collapse" id="navbarId">
+			<div class="collapse navbar-collapse" id="navbar">
 				<ul class="navbar-nav ml-auto">
 					<li class="nav-item">
 						<a href="#home" class="nav-link">Home</a>
@@ -28,7 +28,7 @@
 						<a href="#about" class="nav-link">About</a>
 					</li>
 					<li class="nav-item">
-						<a href="#servicesId" class="nav-link">Services</a>
+						<a href="#services" class="nav-link">Services</a>
 					</li>
 					<li class="nav-item">
 						<a href="#client" class="nav-link">Client</a>
@@ -37,7 +37,7 @@
 						<a href="#portfolio" class="nav-link">Portfolio</a>
 					</li>
 					<li class="nav-item">
-						<a href="#hireId" class="nav-link">Contact</a>
+						<a href="#hire" class="nav-link">Contact</a>
 					</li>
 					<li class="nav-item">
 						<a href="#movie" class="nav-link">Movie</a>
@@ -111,39 +111,39 @@
 	<!-- End About -->
 
 	<!-- Start Experience -->
-	<section class="exp-class" id="expId">
+	<section class="exp-class" id="experience">
 		<div class="container">
 			<div class="row">
 				<div class="col-md-6 d-flex justify-content-center align-items-center">
 					<h3> My Skill</h3>
 				</div>
 				<div class="col-md-6">
-					<label>Html</label>
+					<span>Html</span>
 					<div class="progress">
 						<div class="progress-bar" rol="progressbar" style="width: 0%" arial-valuemin="0" arial-valuemax="100">100%</div>
 					</div>
 
-					<label>Css</label>
+					<span>Css</span>
 					<div class="progress">
 						<div class="progress-bar" rol="progressbar" style="width: 0%" arial-valuemin="0" arial-valuemax="100">95%</div>
 					</div>
 
-					<label>Javascript/jquery</label>
+					<span>Javascript/jquery</span>
 					<div class="progress">
 						<div class="progress-bar" rol="progressbar" style="width: 0%" arial-valuemin="0" arial-valuemax="100">85%</div>
 					</div>
 
-					<label>Wordpress</label>
+					<span>Wordpress</span>
 					<div class="progress">
 						<div class="progress-bar" rol="progressbar" style="width: 0%" arial-valuemin="0" arial-valuemax="100">99%</div>
 					</div>
 
-					<label>Joomla</label>
+					<span>Joomla</span>
 					<div class="progress">
 						<div class="progress-bar" rol="progressbar" style="width: 0%" arial-valuemin="0" arial-valuemax="100">85%</div>
 					</div>
 
-					<label>SEO</label>
+					<span>SEO</span>
 					<div class="progress">
 						<div class="progress-bar" rol="progressbar" style="width: 0%" arial-valuemin="0" arial-valuemax="100">95%</div>
 					</div>
@@ -154,14 +154,12 @@
 	<!-- End Experience -->
 
 	<!-- Start Services -->
-	<section class="services-class r-p bg-sec" id="servicesId">
+	<section class="services-class r-p bg-sec" id="services">
 		<div class="container text-center">
 			<div class="row">
 				<div class="col">
-					<div class="col">
-						<h2>My Services</h2>
-						<p>What we offer to our clients.</p>
-					</div>
+					<h2>My Services</h2>
+					<p>What we offer to our clients.</p>
 				</div>
 			</div>
 			<div class="row">
@@ -252,7 +250,7 @@
 	<!-- End Services -->
 
 	<!-- Start Hire Me -->
-	<section class="hire-me r-p" id="hireId">
+	<section class="hire-me r-p" id="hire">
 		<div class="container text-center">
 			<div class="row">
 				<div class="col">
@@ -279,7 +277,7 @@
 			        <div class="input-group mb-3">
 			          <input type="text" id="searchTextMovie" class="form-control" placeholder="Enter the title of the movie. Minimum 3 Characters. Example: abc....">
 			          <div class="input-group-append">
-			            <button class="btn btn-primary ml-2" type="button" id="btnSearchMovie"> <i class="fa fa-search"></i></button>
+			            <button class="btn btn-primary ml-2" type="button" id="btnSearchMovie" onclick="searchMovies(this, 1)"> <i class="fa fa-search"></i></button>
 			          </div>
 			        </div> 
 			    </div>
@@ -308,7 +306,7 @@
 			        <div class="input-group mb-3">
 			          <input type="text" id="searchTextBook" class="form-control" placeholder="Enter the keyword for the book">
 			          <div class="input-group-append">
-			            <button class="btn btn-primary ml-2" type="button" id="btnSearchBook"> <i class="fa fa-search"></i></button>
+			            <button class="btn btn-primary ml-2" type="button" id="btnSearchBook" onclick="searchBooks(this, 1)"> <i class="fa fa-search"></i></button>
 			          </div>
 			        </div> 
 			    </div>
@@ -337,7 +335,7 @@
 			        <div class="input-group mb-3">
 			          <input type="text" id="searchTextSong" class="form-control" placeholder="Enter the title song">
 			          <div class="input-group-append">
-			            <button class="btn btn-primary ml-2" type="button" id="btnSearchSong"> <i class="fa fa-search"></i></button>
+			            <button class="btn btn-primary ml-2" type="button" id="btnSearchSong" onclick="searchSongs(this)"> <i class="fa fa-search"></i></button>
 			          </div>
 			        </div> 
 			    </div>
@@ -378,7 +376,7 @@
 	<script src="lib/js/bootstrap.min.js"></script>
 	<script src="lib/typed.js"></script>
 	<script src="lib/jquery.waypoints.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.min.js"></script>
+	<script src="lib/simplePagination.min.js"></script>
 	<script src="js/app.js"></script>
 </body>
 </html>

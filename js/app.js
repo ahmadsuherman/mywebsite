@@ -8,27 +8,11 @@ $(function(){
 		}
 	})
 
-	typed()
-	waypoint()
-
-	$('#btnSearchMovie').on('click', function(e){
-	    const search = $('#searchTextMovie').val()
-		,page = 1
-	    searchMovies(search, page);
-	})
-
-	$('#btnSearchBook').on('click', function(e){
-		const search = $('#searchTextBook').val()
-	    , page = 1
-	    searchBooks(search, page);
-	})
-
-	$('#btnSearchSong').on('click', function(e){
-	    searchSongs();
-	})
+	initTyped()
+	initWaypoint()
 })
 
-function typed()
+function initTyped()
 {
 	const typed = new Typed('.element', {
 		strings: ['Ahmad Suherman', 'a Developer', 'a Designer', 'a Businessman'],
@@ -41,10 +25,10 @@ function typed()
 	});
 }
 
-function waypoint()
+function initWaypoint()
 {
 	const waypoint = new Waypoint({
-	  element: document.getElementById('expId'),
+	  element: document.getElementById('experience'),
 	  handler: function() {
 		const p = document.querySelectorAll('.progress-bar');
 		p[0].setAttribute('style', 'width: 100%; transition: 1s all');
@@ -58,14 +42,16 @@ function waypoint()
 	})
 }
 
-function searchMovies(search, page){
+function searchMovies(el, page){
+    const searchValue = $(el).parents('.input-group').find('.form-control').val()
+
     $.ajax({
         url:'https://www.omdbapi.com',
         type:'GET',
         dataType:'json',
         data:{
             'apikey' : '13415ac3', 
-            's' : search,
+            's' : searchValue,
             'page' : page
         },
         success: function(result){
@@ -84,13 +70,13 @@ function searchMovies(search, page){
 								<h5 class="card-title">`+ data.Title +`</h5>
 								<p class="card-text">Year: `+ data.Year +` </p>
 	                        	<a href="#" class="btn btn-primary btn-sm btn-movie" id="btnDetailMovie" 
-                    			data-toggle="modal" onClick="showModalMovie('${data.imdbID}', '#exampleModal')"> Detail</a>
+                    			onClick="showModalMovie(this)" data-id="`+ data.imdbID +`" data-toggle="modal"> Detail</a>
 							</div>
 						</div>
 	                </div>
                     `);
                 })
-
+                
                 if (page === 1) {
                 	const items = $('#movieList .card-movie')
 		            , numItems = result.totalResults
@@ -102,9 +88,9 @@ function searchMovies(search, page){
 		                prevText:"&lt;",
 		                nextText:"&gt;",
 		                onPageClick: function(pageNumber){
-		                    searchMovies(search, pageNumber)
+		                    searchMovies(el, pageNumber)
 		                }
-		            }).show()
+		            })
                 }
 
             }else{
@@ -117,18 +103,26 @@ function searchMovies(search, page){
             }
         },
         error: function (e) {
-          alert(e)
+            $('#movieList').html(`
+                <div class="col-sm-12 text-center">
+                    <h1> `+ e.responseJSON.Error +` </h1>
+                </div>
+            `);
+
+            $('#paginationContainerMovie').hide()
         }
     });
 }
 
-function searchBooks(search, page){
+function searchBooks(el, page){
+    const searchValue = $(el).parents('.input-group').find('.form-control').val()
+
     $.ajax({
         url:'https://www.googleapis.com/books/v1/volumes',
         type:'GET',
         dataType:'json',
         data:{
-            'q' : search,
+            'q' : searchValue,
             'page' : page
         },
         success: function(result){
@@ -147,7 +141,7 @@ function searchBooks(search, page){
 							<div class="card-body">
 								<h5 class="card-title">`+ title +`</h5>
 	                        	<a href="#" class="btn btn-primary btn-sm"
-                    			data-toggle="modal" onClick="showModalBook('${data.id}', '#exampleModal')"> Detail</a>
+                    			data-toggle="modal" onClick="showModalBook(this)" data-id="`+ data.id +`"> Detail</a>
 							</div>
 						</div>
 	                </div>
@@ -165,7 +159,7 @@ function searchBooks(search, page){
 		                prevText:"&lt;",
 		                nextText:"&gt;",
 		                onPageClick: function(pageNumber){
-		                    searchBooks(pageNumber, search)
+		                    searchBooks(el, pageNumber)
 		                }
 		            })
                }
@@ -181,8 +175,7 @@ function searchBooks(search, page){
             }
         },
         error: function (e) {
-        	$('#bookList').html('');
-           	$('#bookList').append(`
+           	$('#bookList').html(`
                 <div class="col-sm-12 text-center">
                     <h1> `+ e.responseJSON.error.message +` </h1>
                 </div>
@@ -193,14 +186,15 @@ function searchBooks(search, page){
     });
 }
 
-function searchSongs(){
-	const search = $('#searchTextSong').val()
+function searchSongs(el){
+	const searchValue = $(el).parents('.input-group').find('.form-control').val()
+
     $.ajax({
         url:'https://song-lyrics-api-o0m8tth8t-azharimm.vercel.app/search',
         type:'GET',
         dataType:'json',
         data:{
-            'q' : search,
+            'q' : searchValue,
         },
         success: function(result){
             $('#songList').html('');
@@ -213,12 +207,13 @@ function searchSongs(){
 								<h5 class="card-title">`+ data.songTitle +`</h5>
 								<p class="card-text">Artist: `+ data.artist +` </p>
 	                        	<a href="#" class="btn btn-primary btn-sm"
-                    			data-toggle="modal" onClick="showModalSong('${data.songId}', '#exampleModal')"> Detail</a>
+                    			data-toggle="modal" onClick="showModalSong(this)" data-id="`+ data.songId +`"> Detail</a>
 							</div>
 						</div>
 	                </div>
                     `);
                 })
+
 
                 const items = $('#songList .card-song')
 	            , numItems = result.data.length
@@ -248,8 +243,7 @@ function searchSongs(){
             }
         },
         error: function (e) {
-        	$('#songList').html('');
-          	$('#songList').append(`
+          	$('#songList').html(`
 	            <div class="col-sm-12 text-center">
 	                <h1> Something went wrong: Please fill in the search query! </h1>
 	            </div>
@@ -260,10 +254,9 @@ function searchSongs(){
     });
 }
 
-function showModalMovie(id, modal)
+function showModalMovie(el)
 {	
-	$(modal).modal('show');
-
+    const id = $(el).data('id')
     $.ajax({
         url:'https://www.omdbapi.com',
         type:'GET',
@@ -300,15 +293,20 @@ function showModalMovie(id, modal)
             }
         },
         error: function (e) {
-          	alert(e)
+            $('.modal-body').html(`
+                <div class="col-sm-12 text-center">
+                    <h1> `+ e.responseJSON.Error +` </h1>
+                </div>
+             `);
         }
-    });
+    }).done(function(){
+        $('#exampleModal').modal('show')
+    })
 }
 
-function showModalBook(id, modal)
+function showModalBook(el)
 {
-	$(modal).modal('show')
-
+	const id = $(el).data('id')
     $.ajax({
         url:'https://www.googleapis.com/books/v1/volumes/' + id,
         type:'GET',
@@ -347,16 +345,22 @@ function showModalBook(id, modal)
             `);
         },
         error: function (e) {
-          alert(e)
+            $('.modal-body').html(`
+                <div class="col-sm-12 text-center">
+                    <h1> `+ e.responseJSON.error.message +` </h1>
+                </div>
+            `);
         }
-    });
+    }).done(function(){
+        $('#exampleModal').modal('show')
+    })
 
 }
 
-function showModalSong(id, modal)
+function showModalSong(el)
 {
-	$(modal).modal('show')
-
+    const id = $(el).data('id')
+    
     $.ajax({
         url:'https://song-lyrics-api-o0m8tth8t-azharimm.vercel.app/lyrics/' + id,
         type:'GET',
@@ -382,7 +386,13 @@ function showModalSong(id, modal)
             `);
         },
         error: function (e) {
-          	alert(e)
+            $('.modal-body').html(`
+                <div class="col-sm-12 text-center">
+                    <h1> Something went wrong: Please fill in the search query! </h1>
+                </div>
+            `);
         }
-    });
+    }).done(function(){
+        $('#exampleModal').modal('show')
+    })
 }
